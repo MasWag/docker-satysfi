@@ -20,6 +20,9 @@ jobs:
   release:
     needs: info
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     strategy:
       matrix:
         include:
@@ -44,16 +47,17 @@ jobs:
             ${{ runner.os }}-buildx-${{ matrix.context }}-
       - uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.context }}/Dockerfile
           push: true
           tags: |
-            amutake/satysfi:${{ matrix.tag }}
-            amutake/satysfi:${{ matrix.tag-alias }}
+            ghcr.io/maswag/satysfi:${{ matrix.tag }}
+            ghcr.io/maswag/satysfi:${{ matrix.tag-alias }}
           build-args: |
             BUILD_DATE=${{ needs.info.outputs.date }}
             VERSION=${{ matrix.tag }}

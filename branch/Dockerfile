@@ -1,4 +1,4 @@
-FROM ghcr.io/MasWag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2 AS build-env
+FROM ghcr.io/maswag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2 AS build-env
 
 ARG BRANCH=master
 

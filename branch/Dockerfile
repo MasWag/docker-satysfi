@@ -2,7 +2,7 @@ FROM ghcr.io/maswag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2 AS build-env
 
 ARG BRANCH=master
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y bzip2 && rm -rf /var/lib/apt/lists/*
 RUN opam update
 
 # Install Satyrographos

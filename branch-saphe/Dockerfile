@@ -3,8 +3,7 @@ FROM ghcr.io/maswag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2 AS build-env
 ARG BRANCH=dev-0-1-0-separate-saphe-from-satysfi
 
 # Install system dependencies
-RUN apt-get update
-RUN apt-get install -y autoconf
+RUN apt-get update && apt-get install -y bzip2 autoconf && rm -rf /var/lib/apt/lists/*
 
 # Install SATySFi and Saphe
 RUN git clone https://github.com/gfngfn/SATySFi.git /root/SATySFi

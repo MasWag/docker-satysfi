@@ -49,6 +49,8 @@ COPY --from=build-env /satyrographos-revision /satyrographos-revision
 
 RUN date --iso-8601=seconds > /build-date
 
+RUN apt-get update && apt-get install -y bzip2 && rm -rf /var/lib/apt/lists/*
+
 # Check all shared libraries installed
 RUN for bin in satysfi satyrographos; do \
     ldd $(which $bin) | grep "not found"; \

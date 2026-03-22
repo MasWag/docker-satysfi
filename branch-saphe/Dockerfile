@@ -41,7 +41,7 @@ COPY --from=build-env /build-date /build-date
 
 # Setup runtime dependencies
 RUN apt-get update && \
-    apt-get install -y git wget unzip && \
+    apt-get install -y bzip2 git wget unzip && \
     rm -rf /var/lib/apt/lists/*
 
 # Check all shared libraries installed

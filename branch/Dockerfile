@@ -5,30 +5,12 @@ ARG BRANCH=master
 RUN apt-get update && apt-get install -y bzip2 && rm -rf /var/lib/apt/lists/*
 RUN opam update
 
-# Install Satyrographos
-RUN git clone https://github.com/na4zagin3/satyrographos.git /root/satyrographos
-WORKDIR /root/satyrographos
-RUN opam pin add --no-action --kind local satyrographos .
-RUN opam install satyrographos
-RUN git describe --tags > /satyrographos-revision
-# temporary fix
-RUN eval $(opam env) && cp $(which satyrographos) /bin/
-
-# Install SATySFi
-# SATySFi (satysfi-dist) installation must be after satyrographos installation
-# because $(opam var share)/satysfi is removed due to satysfi reinstallation caused by satyrographos.
-# cf. https://github.com/amutake/docker-satysfi/pull/17
-RUN git clone https://github.com/gfngfn/SATySFi.git /root/SATySFi
-WORKDIR /root/SATySFi
-RUN git checkout ${BRANCH}
-RUN opam pin add --no-action --kind local satysfi .
-RUN opam install satysfi
-RUN apt-get update \
-    && apt-get install -y wget \
-    && ./download-fonts.sh
-RUN sed -i -e "s!/usr/local/share!$(opam var share)!" install-libs.sh
-RUN ./install-libs.sh $(opam var share)/satysfi
-RUN git describe --tags > /satysfi-revision
+# Install SATySFi and Satyrographos
+RUN opam repository add satysfi-external https://github.com/gfngfn/satysfi-external-repo.git
+RUN opam repository add satyrographos https://github.com/na4zagin3/satyrographos-repo.git
+RUN opam update
+RUN opam install satysfi satysfi-dist satyrographos
+RUN eval $(opam env) && satysfi --version > /satysfi-revision && satyrographos --version > /satyrographos-revision
 
 # Copy binaries
 RUN eval $(opam env) && \

@@ -1,4 +1,4 @@
-FROM ghcr.io/amutake/satysfi-base-image:opam-2.1.3-ocaml-4.14.0 AS build-env
+FROM ghcr.io/MasWag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2 AS build-env
 
 # Versions
 ENV SATYSFI_VERSION=0.0.11
@@ -15,7 +15,7 @@ RUN eval $(opam env) && cp $(which satysfi) / && cp $(which satyrographos) /
 FROM ubuntu:24.04
 
 # Versions
-ENV OPAM_VERSION=2.1.3
+ENV OPAM_VERSION=2.5.0
 ENV SATYSFI_VERSION=0.0.11
 ENV SATYROGRAPHOS_VERSION=0.0.2.13
 

@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     strategy:
       matrix:
         platform:
@@ -27,8 +30,9 @@ jobs:
             ${{ runner.os }}-buildx-branch-${{ github.event.inputs.branch }}-${{ matrix.platform }}-
       - uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - id: args
         run: |
           echo "date=$(date --iso-8601=seconds)" >> $GITHUB_OUTPUT
@@ -41,7 +45,7 @@ jobs:
           file: branch/Dockerfile
           push: false
           load: true
-          tags: amutake/satysfi:${{ steps.args.outputs.image_tag }}
+          tags: ghcr.io/maswag/satysfi:${{ steps.args.outputs.image_tag }}
           build-args: |
             BUILD_DATE=${{ steps.args.outputs.date }}
             VERSION=${{ steps.args.outputs.version }}
@@ -52,11 +56,11 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       # run tests
-      - run: docker run --rm amutake/satysfi:${{ steps.args.outputs.image_tag }} satysfi --help
-      - run: docker run --rm amutake/satysfi:${{ steps.args.outputs.image_tag }} satyrographos help
-      - run: docker run --rm -v $(pwd)/tests:/satysfi amutake/satysfi:${{ steps.args.outputs.image_tag }} satysfi minimum.saty
-      - run: docker run --rm -v $(pwd)/tests:/satysfi amutake/satysfi:${{ steps.args.outputs.image_tag }} satysfi with-dist.saty
+      - run: docker run --rm ghcr.io/maswag/satysfi:${{ steps.args.outputs.image_tag }} satysfi --help
+      - run: docker run --rm ghcr.io/maswag/satysfi:${{ steps.args.outputs.image_tag }} satyrographos help
+      - run: docker run --rm -v $(pwd)/tests:/satysfi ghcr.io/maswag/satysfi:${{ steps.args.outputs.image_tag }} satysfi minimum.saty
+      - run: docker run --rm -v $(pwd)/tests:/satysfi ghcr.io/maswag/satysfi:${{ steps.args.outputs.image_tag }} satysfi with-dist.saty
       - run: git clone --branch ${{ github.event.inputs.branch }} https://github.com/gfngfn/SATySFi.git
-      - run: docker run --rm -v $(pwd)/SATySFi/demo:/satysfi amutake/satysfi:${{ steps.args.outputs.image_tag }} satysfi demo.saty
+      - run: docker run --rm -v $(pwd)/SATySFi/demo:/satysfi ghcr.io/maswag/satysfi:${{ steps.args.outputs.image_tag }} satysfi demo.saty
       # push
-      - run: docker push amutake/satysfi:${{ steps.args.outputs.image_tag }}
+      - run: docker push ghcr.io/maswag/satysfi:${{ steps.args.outputs.image_tag }}

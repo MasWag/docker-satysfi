@@ -1,11 +1,11 @@
-FROM ghcr.io/amutake/satysfi-base-image:opam-2.1.3-ocaml-4.14.0 AS build-env
+FROM ghcr.io/maswag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2 AS build-env
 
 # Versions
 ENV SATYSFI_VERSION=0.0.11
 ENV SATYROGRAPHOS_VERSION=0.0.2.13
 
 # Setup SATySFi & Satyrographos
-RUN apt-get update
+RUN apt-get update && apt-get install -y bzip2 && rm -rf /var/lib/apt/lists/*
 RUN opam update
 RUN opam install satysfi.${SATYSFI_VERSION} satyrographos.${SATYROGRAPHOS_VERSION}
 RUN eval $(opam env) && cp $(which satysfi) / && cp $(which satyrographos) /
@@ -15,7 +15,7 @@ RUN eval $(opam env) && cp $(which satysfi) / && cp $(which satyrographos) /
 FROM ubuntu:24.04
 
 # Versions
-ENV OPAM_VERSION=2.1.3
+ENV OPAM_VERSION=2.5.0
 ENV SATYSFI_VERSION=0.0.11
 ENV SATYROGRAPHOS_VERSION=0.0.2.13
 
@@ -32,7 +32,7 @@ RUN apt-get update \
       # - make: to build satyrographos packages
       # - git: to add/update opam repositories
       # - rsync: to pin local-bin packages
-      && apt-get install -y curl patch unzip make git rsync \
+      && apt-get install -y bzip2 curl patch unzip make git rsync \
       && rm -rf /var/lib/apt/lists/*
 RUN curl -fsL -o /usr/local/bin/opam https://github.com/ocaml/opam/releases/download/${OPAM_VERSION}/opam-${OPAM_VERSION}-$([ $(uname -m) = aarch64 ] && echo arm64 || uname -m)-linux \
       && chmod a+x /usr/local/bin/opam

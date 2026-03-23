@@ -1,11 +1,11 @@
-FROM ghcr.io/amutake/satysfi-base-image:opam-2.1.3-ocaml-4.14.0 AS build-env
+FROM ghcr.io/maswag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2 AS build-env
 
 # Versions
 ENV SATYSFI_VERSION=0.0.11
 ENV SATYROGRAPHOS_VERSION=0.0.2.13
 
 # Setup SATySFi & Satyrographos
-RUN apt-get update
+RUN apt-get update && apt-get install -y bzip2 && rm -rf /var/lib/apt/lists/*
 RUN opam update
 RUN opam install satysfi.${SATYSFI_VERSION} satysfi-dist.${SATYSFI_VERSION} satyrographos.${SATYROGRAPHOS_VERSION}
 RUN eval $(opam env) && \

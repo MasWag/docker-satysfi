@@ -21,12 +21,16 @@ jobs:
           # - linux/arm64
         include:
           - context: .
+            platform: linux/amd64
             tag: latest
           - context: slim
+            platform: linux/amd64
             tag: slim
           - context: opam-slim
+            platform: linux/amd64
             tag: opam-slim
           - context: branch
+            platform: linux/amd64
             tag: nightly
     steps:
       - uses: actions/checkout@v4

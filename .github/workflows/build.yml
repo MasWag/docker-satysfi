@@ -54,7 +54,7 @@ jobs:
           file: ${{ matrix.context }}/Dockerfile
           push: false
           load: true
-          tags: amutake/satysfi:ci
+          tags: ghcr.io/maswag/satysfi:ci
           build-args: |
             BUILD_DATE=${{ steps.args.outputs.date }}
             VERSION=ci
@@ -68,17 +68,17 @@ jobs:
       # the size represents uncompressed. see https://gist.github.com/MichaelSimons/fb588539dcefd9b5fdf45ba04c302db6
       - run: docker images
       # run tests
-      - run: docker run --rm amutake/satysfi:ci satysfi --help
-      - run: docker run --rm amutake/satysfi:ci satyrographos help
-      - run: docker run --rm -v $(pwd)/tests:/satysfi amutake/satysfi:ci satysfi minimum.saty
-      - run: docker run --rm -v $(pwd)/tests:/satysfi amutake/satysfi:ci satysfi with-dist.saty
-      - run: docker run --rm -v $(pwd)/tests:/satysfi amutake/satysfi:ci sh -c "opam install satysfi-base --ignore-constraints-on=satysfi && satyrographos install && satysfi with-base.saty"
+      - run: docker run --rm ghcr.io/maswag/satysfi:ci satysfi --help
+      - run: docker run --rm ghcr.io/maswag/satysfi:ci satyrographos help
+      - run: docker run --rm -v $(pwd)/tests:/satysfi ghcr.io/maswag/satysfi:ci satysfi minimum.saty
+      - run: docker run --rm -v $(pwd)/tests:/satysfi ghcr.io/maswag/satysfi:ci satysfi with-dist.saty
+      - run: docker run --rm -v $(pwd)/tests:/satysfi ghcr.io/maswag/satysfi:ci sh -c "opam install satysfi-base --ignore-constraints-on=satysfi && satyrographos install && satysfi with-base.saty"
         if: ${{ matrix.context == '.' || matrix.context == 'opam-slim' }}
       # push to GHCR on merge to main
       - name: Push to GHCR
         if: github.event_name == 'push'
         run: |
-          docker tag amutake/satysfi:ci ghcr.io/maswag/satysfi:${{ matrix.tag }}
+          docker tag ghcr.io/maswag/satysfi:ci ghcr.io/maswag/satysfi:${{ matrix.tag }}
           docker push ghcr.io/maswag/satysfi:${{ matrix.tag }}
 
   # build v0.1.0 satysfi
@@ -121,7 +121,7 @@ jobs:
           file: branch-saphe/Dockerfile
           push: false
           load: true
-          tags: amutake/satysfi:ci
+          tags: ghcr.io/maswag/satysfi:ci
           build-args: |
             BUILD_DATE=${{ steps.args.outputs.date }}
             VERSION=ci
@@ -135,13 +135,13 @@ jobs:
       # the size represents uncompressed. see https://gist.github.com/MichaelSimons/fb588539dcefd9b5fdf45ba04c302db6
       - run: docker images
       # run tests
-      - run: docker run --rm amutake/satysfi:ci satysfi --help
-      - run: docker run --rm amutake/satysfi:ci saphe --help
+      - run: docker run --rm ghcr.io/maswag/satysfi:ci satysfi --help
+      - run: docker run --rm ghcr.io/maswag/satysfi:ci saphe --help
       - run: git clone --branch ${{ matrix.branch }} https://github.com/gfngfn/SATySFi.git
-      - run: docker run --rm -v $(pwd)/SATySFi/demo:/satysfi amutake/satysfi:ci sh -c "saphe solve demo.saty && saphe build demo.saty"
+      - run: docker run --rm -v $(pwd)/SATySFi/demo:/satysfi ghcr.io/maswag/satysfi:ci sh -c "saphe solve demo.saty && saphe build demo.saty"
       # push to GHCR on merge to main
       - name: Push to GHCR
         if: github.event_name == 'push'
         run: |
-          docker tag amutake/satysfi:ci ghcr.io/maswag/satysfi:branch-${{ matrix.branch }}
+          docker tag ghcr.io/maswag/satysfi:ci ghcr.io/maswag/satysfi:branch-${{ matrix.branch }}
           docker push ghcr.io/maswag/satysfi:branch-${{ matrix.branch }}

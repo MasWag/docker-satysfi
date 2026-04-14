@@ -1,4 +1,4 @@
-FROM ghcr.io/maswag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2
+FROM ghcr.io/maswag/satysfi-base-image:opam-2.5.0-ocaml-4.14.2-v1
 
 # Versions
 ENV SATYSFI_VERSION=0.0.11
